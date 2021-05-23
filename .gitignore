@@ -1,0 +1,6 @@
+#CLION
+/.idea
+/cmake-build-*
+
+#binaries
+/install
