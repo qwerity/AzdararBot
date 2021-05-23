@@ -22,10 +22,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 set(QT_VERSION 5)
-set(REQUIRED_QT_LIBS Core Gui Widgets)
+set(REQUIRED_QT_LIBS Core Widgets Xml Network)
 
 find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_QT_LIBS} REQUIRED)
-set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets)
+set(REQUIRED_LIBS_QUALIFIED Qt5::Gui Qt5::Widgets Qt5::Xml Qt5::Network)
 
 ########################################################################################################################
 add_subdirectory(thirdparty/tgbot-cpp)
