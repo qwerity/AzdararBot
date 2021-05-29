@@ -15,17 +15,17 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="newsRSSUrl">
+      <property name="text">
+       <string>https://www.azdarar.am/rss/</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
        <string>Search URL</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="newsSearchUrl">
-      <property name="text">
-       <string>https://www.azdarar.am/search/</string>
       </property>
      </widget>
     </item>
@@ -36,10 +36,17 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="newsRSSUrl">
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="keywords">
       <property name="text">
-       <string>https://www.azdarar.am/rss/</string>
+       <string>աճուրդ</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="newsSearchUrl">
+      <property name="text">
+       <string>https://www.azdarar.am/search/</string>
       </property>
      </widget>
     </item>
@@ -50,22 +57,21 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="keywords">
-      <property name="text">
-       <string>աճուրդ</string>
-      </property>
-     </widget>
-    </item>
     <item row="3" column="0" colspan="2">
      <widget class="QPushButton" name="grabNews">
       <property name="text">
        <string>Grab</string>
       </property>
+      <property name="shortcut">
+       <string>Ctrl+G</string>
+      </property>
      </widget>
     </item>
     <item row="4" column="0" colspan="2">
      <widget class="QListView" name="listView"/>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QTextBrowser" name="logs"/>
     </item>
    </layout>
   </widget>
@@ -75,7 +81,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -90,6 +96,9 @@
   <action name="actionQuit">
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
  </widget>
