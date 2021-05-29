@@ -16,6 +16,9 @@ public:
   ~MainWindow() override;
 
 private:
+  void initSignalSlots();
+
+private:
   Ui::MainWindow *ui = Q_NULLPTR;
   AzdararParser azdararParser;
 };

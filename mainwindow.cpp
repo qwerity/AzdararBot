@@ -9,18 +9,35 @@ MainWindow::MainWindow(QWidget *parent) :
 {
   ui->setupUi(this);
 
-  connect(ui->actionQuit, &QAction::triggered, [](){ qApp->quit(); });
-
   ui->logs->setOpenExternalLinks(true);
-  connect(ui->grabNews, &QPushButton::clicked, [this](){
-    connect(&azdararParser, &AzdararParser::rssParsed, [this](const QString& data){
-      ui->logs->setHtml(data);
-    });
-    azdararParser.rss(ui->keywords->text());
-  });
+
+  initSignalSlots();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+void MainWindow::initSignalSlots() {
+  connect(ui->actionQuit, &QAction::triggered, [](){ qApp->quit(); });
+
+  connect(ui->grabNews, &QPushButton::clicked, [this](){
+    connect(&azdararParser, &AzdararParser::rssParsed, [this](const QVector<AzdararItem> &azdararRSS){
+      const auto& keywords = ui->keywords->text().toLower();
+      QString html;
+
+      for(const auto &item : azdararRSS) {
+        if (item.isEmpty()) { continue;}
+
+        if (!keywords.isEmpty() && !item.title.toLower().contains(keywords)
+                                && !item.description.toLower().contains(keywords)) {
+          continue;
+        }
+
+        html.append(item.htmlBlock());
+      }
+      ui->logs->setHtml(html);
+    });
+    azdararParser.rss();
+  });
 }

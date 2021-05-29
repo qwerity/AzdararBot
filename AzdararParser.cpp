@@ -6,23 +6,28 @@ AzdararParser::AzdararParser() {
 }
 
 void AzdararParser::rssParse(const QByteArray &data) {
+  QVector<AzdararItem> items;
   xmlReader = new QXmlStreamReader(data);
 
-  QString html;
   while(xmlReader->readNextStartElement()) {
     qDebug() << xmlReader->name();
     if (xmlReader->name() == "channel") {
       while(xmlReader->readNextStartElement()) {
         if (xmlReader->name() == "item") {
-          html.append("<p>");
+          AzdararItem item;
           while(xmlReader->readNextStartElement()) {
-            if ("link" != xmlReader->name()) {
-              html.append(QString("<strong>%1:</strong> %2<br>").arg(xmlReader->name(), xmlReader->readElementText()));
-            } else {
-              html.append(QString("<a href='%2'><strong>%1:</strong></a><br>").arg(xmlReader->name(), xmlReader->readElementText()));
+            const auto name = xmlReader->name();
+            const auto text = xmlReader->readElementText();
+
+            if ("title" == name) { item.title = text; }
+            else if ("description" == name) { item.description = text; }
+            else if ("link" == name) { item.link = text; }
+            else if ("pubDate" == name) { item.pubDate = text; }
+            else {
+              qDebug() << "Unexpected item: " << name << " " << text;
             }
           }
-          html.append("</p>");
+          items.append(item);
         }
         else {
           qDebug() << xmlReader->name() << xmlReader->readElementText();
@@ -35,11 +40,10 @@ void AzdararParser::rssParse(const QByteArray &data) {
     qDebug() << "Error: Failed to parse xml " << qPrintable(xmlReader->errorString());
   }
 
-  Q_EMIT rssParsed(html);
+  Q_EMIT rssParsed(items);
 }
 
-void AzdararParser::rss(const QString &filter) {
-  mFilter = filter;
+void AzdararParser::rss() {
   downloadManager.doDownload(QUrl("https://www.azdarar.am/rss/"));
 }
 
@@ -47,8 +51,7 @@ void AzdararParser::searchParse(const QByteArray &data) {
 
 }
 
-void AzdararParser::search(const QString &filter) {
-  mFilter = filter;
+void AzdararParser::search() {
   downloadManager.doDownload(QUrl("https://www.azdarar.am/search/"));
 }
 
