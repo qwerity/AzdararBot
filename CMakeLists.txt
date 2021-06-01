@@ -27,6 +27,10 @@ set(REQUIRED_QT_LIBS Core Widgets Xml Network)
 find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_QT_LIBS} REQUIRED)
 set(REQUIRED_LIBS_QUALIFIED Qt5::Gui Qt5::Widgets Qt5::Xml Qt5::Network)
 
+# POCO
+find_package(OpenSSL REQUIRED)
+find_package(Poco COMPONENTS Foundation Net NetSSL Crypto JSON REQUIRED)
+
 ########################################################################################################################
 add_subdirectory(thirdparty/tgbot-cpp)
 LIST(APPEND REQUIRED_LIBS_QUALIFIED TgBot)
@@ -39,5 +43,7 @@ qt5_wrap_ui(FORMS_HEADERS ${FORMS})
 add_executable(${PROJECT_NAME} ${SOURCES} ${FORMS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenSSL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Poco_LIBRARIES})
 
 ########################################################################################################################

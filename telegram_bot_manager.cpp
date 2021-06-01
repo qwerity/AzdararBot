@@ -7,43 +7,40 @@ TelegramBotManager::TelegramBotManager(const std::string &token)
 
     bot.getEvents().onCommand("keywords", [this](const TgBot::Message::Ptr &message)
     {
-        botCommandKeywords.append(QString::fromStdString(message->text));
+        const auto keywords = botCommandKeywords.join(" ");
+        bot.getApi().sendMessage(message->chat->id, keywords.isEmpty() ? "keywords not set" : keywords.toStdString());
     });
     bot.getEvents().onCommand("subscribe", [this](const TgBot::Message::Ptr &message)
     {
-        messageChatID = message->chat->id;
-        azdararParser.rss();
+        auto items = azdararParser.rssParsedSync();
+
+        for (auto &item : items) {
+            if (item.isEmpty()) { continue; }
+
+            if (! item.containsAtLeastOneKeywords(botCommandKeywords)) { continue; }
+
+            try {
+                bot.getApi().sendMessage(message->chat->id, item.tgBlock());
+            }
+            catch(std::exception &e) {
+                qInfo() << e.what();
+            }
+        }
     });
     bot.getEvents().onAnyMessage([&](const TgBot::Message::Ptr &message) {
         printf("User wrote %s\n", message->text.c_str());
-        if (StringTools::startsWith(message->text, "/start")) {
+        if (StringTools::startsWith(message->text, "/")) {
             return;
         }
-        bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
-    });
-}
-
-void TelegramBotManager::initSignalSlots()
-{
-    connect(&azdararParser, &AzdararParser::rssParsed, [this](const QVector<AzdararItem> &azdararRSS)
-    {
-        const auto &keywords = botCommandKeywords.constFirst().toLower();
-        QString html;
-
-        for (const auto &item : azdararRSS) {
-            if (item.isEmpty()) { continue; }
-
-            if (!keywords.isEmpty() && !item.title.toLower().contains(keywords)
-                && !item.description.toLower().contains(keywords)) {
-                continue;
-            }
-
-            html.append(item.htmlBlock());
+        try {
+            botCommandKeywords.append(QString::fromStdString(message->text).toLower());
+            bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
         }
-        bot.getApi().sendMessage(messageChatID, html.toStdString());
+        catch(std::exception &e) {
+            qInfo() << e.what();
+        }
     });
 }
-
 
 void TelegramBotManager::run()
 {

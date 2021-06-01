@@ -1,12 +1,19 @@
 #include "AzdararParser.h"
 #include <QDebug>
 
+#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/URI.h"
+
+
 AzdararParser::AzdararParser()
 {
+    httpsStreamFactory = std::unique_ptr<Poco::Net::HTTPSStreamFactory>(new Poco::Net::HTTPSStreamFactory);
+
     connect(&downloadManager, &DownloadManager::data, this, &AzdararParser::rssParse);
 }
 
-void AzdararParser::rssParse(const QByteArray &data)
+QVector<AzdararItem> AzdararParser::rssParse(const QByteArray &data)
 {
     QVector<AzdararItem> items;
     xmlReader = new QXmlStreamReader(data);
@@ -43,11 +50,12 @@ void AzdararParser::rssParse(const QByteArray &data)
     }
 
     Q_EMIT rssParsed(items);
+    return items;
 }
 
 void AzdararParser::rss()
 {
-    downloadManager.doDownload(QUrl("https://www.azdarar.am/rss/"));
+    downloadManager.doDownload(QUrl(QString::fromStdString(rssURL)));
 }
 
 void AzdararParser::searchParse(const QByteArray &data)
@@ -57,6 +65,18 @@ void AzdararParser::searchParse(const QByteArray &data)
 
 void AzdararParser::search()
 {
-    downloadManager.doDownload(QUrl("https://www.azdarar.am/search/"));
+    downloadManager.doDownload(QUrl(QString::fromStdString(searchURL)));
 }
 
+QVector<AzdararItem> AzdararParser::rssParsedSync()
+{
+    // Create the URI from the URL to the file.
+    static Poco::URI uri(rssURL);
+    std::string buffer{};
+
+    // Open the stream and copy the data to the buffer.
+    auto pStr = std::unique_ptr<std::istream>(httpsStreamFactory->open(uri));
+    Poco::StreamCopier::copyToString(*pStr, buffer);
+
+    return rssParse(QByteArray::fromStdString(buffer));
+}

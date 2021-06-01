@@ -17,7 +17,6 @@ public:
 signals:
 
 private:
-    void initSignalSlots();
     void initMyCommands();
     void run() override;
 
@@ -26,7 +25,6 @@ private:
     std::vector<TgBot::BotCommand::Ptr> commands;
 
     AzdararParser azdararParser;
-    std::int64_t messageChatID = 0;
 
     bool stopped = false;
     QStringList botCommandKeywords;
