@@ -7,8 +7,8 @@ if (NOT CMAKE_PREFIX_PATH)
 endif ()
 
 # Common build configs #################################################################################################
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         ${CMAKE_CURRENT_SOURCE_DIR}/install)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY         ${CMAKE_CURRENT_SOURCE_DIR}/install)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/install)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/install)
 
 # Find includes in corresponding build directories
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

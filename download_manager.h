@@ -9,21 +9,21 @@ QT_END_NAMESPACE
 
 class DownloadManager: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DownloadManager();
-  void doDownload(const QUrl &url);
-  static bool isHttpRedirect(QNetworkReply *reply);
+    DownloadManager();
+    void doDownload(const QUrl &url);
+    static bool isHttpRedirect(QNetworkReply *reply);
 
 signals:
-  void data(const QByteArray& data);
+    void data(const QByteArray &data);
 
 public slots:
-  void downloadFinished(QNetworkReply *reply);
-  static void sslErrors(const QList<QSslError> &errors);
+    void downloadFinished(QNetworkReply *reply);
+    static void sslErrors(const QList<QSslError> &errors);
 
 private:
-  QNetworkAccessManager manager;
-  QVector<QNetworkReply *> currentDownloads;
+    QNetworkAccessManager manager;
+    QVector<QNetworkReply *> currentDownloads;
 };

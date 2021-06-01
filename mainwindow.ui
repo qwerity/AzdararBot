@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>800</width>
-    <height>600</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0" colspan="2">
-     <widget class="QTextBrowser" name="logs"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="labelKeywords">
-      <property name="toolTip">
-       <string>separated by space</string>
-      </property>
-      <property name="text">
-       <string>Keywords</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="keywords">
-      <property name="text">
-       <string>աճուրդ</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QPushButton" name="grabNews">
-      <property name="text">
-       <string>Grab</string>
-      </property>
-      <property name="shortcut">
-       <string>Ctrl+G</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionQuit"/>
-   </widget>
-   <addaction name="menuFile"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionQuit">
-   <property name="text">
-    <string>&amp;Quit</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
-  </action>
- </widget>
- <resources/>
- <connections/>
+    <class>MainWindow</class>
+    <widget class="QMainWindow" name="MainWindow">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>800</width>
+                <height>600</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>MainWindow</string>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <layout class="QGridLayout" name="gridLayout">
+                <item row="2" column="0" colspan="2">
+                    <widget class="QTextBrowser" name="logs"/>
+                </item>
+                <item row="0" column="0">
+                    <widget class="QLabel" name="labelKeywords">
+                        <property name="toolTip">
+                            <string>separated by space</string>
+                        </property>
+                        <property name="text">
+                            <string>Keywords</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="0" column="1">
+                    <widget class="QLineEdit" name="keywords">
+                        <property name="text">
+                            <string>աճուրդ</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="1" column="0" colspan="2">
+                    <widget class="QPushButton" name="grabNews">
+                        <property name="text">
+                            <string>Grab</string>
+                        </property>
+                        <property name="shortcut">
+                            <string>Ctrl+G</string>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QMenuBar" name="menubar">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>800</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <widget class="QMenu" name="menuFile">
+                <property name="title">
+                    <string>File</string>
+                </property>
+                <addaction name="actionQuit"/>
+            </widget>
+            <addaction name="menuFile"/>
+        </widget>
+        <widget class="QStatusBar" name="statusbar"/>
+        <action name="actionQuit">
+            <property name="text">
+                <string>&amp;Quit</string>
+            </property>
+            <property name="shortcut">
+                <string>Ctrl+Q</string>
+            </property>
+        </action>
+    </widget>
+    <resources/>
+    <connections/>
 </ui>
