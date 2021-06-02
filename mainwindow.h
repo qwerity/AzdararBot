@@ -5,6 +5,8 @@
 #include "AzdararParser.h"
 #include "telegram_bot_manager.h"
 
+#include "Poco/JSON/Object.h"
+
 namespace Ui
 {
 class MainWindow;
@@ -19,10 +21,13 @@ public:
     ~MainWindow() override;
 
 private:
+    void parseConfigFile(const QString &configFilePath = "config.json");
     void initSignalSlots();
 
 private:
     Ui::MainWindow *ui = Q_NULLPTR;
     AzdararParser azdararParser;
-    TelegramBotManager tgManager;
+
+    Poco::JSON::Object::Ptr configJson = nullptr;
+    std::unique_ptr<TelegramBotManager> tgManager = nullptr;
 };

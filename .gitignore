@@ -4,6 +4,7 @@
 
 #binaries
 /install/AzdararBot
+/install/TgBot_test
 /install/config.json
 
 #qt

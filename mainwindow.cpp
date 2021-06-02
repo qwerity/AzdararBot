@@ -3,24 +3,43 @@
 
 #include "AzdararParser.h"
 
+#include "Poco/JSON/Parser.h"
+#include "Poco/FileStream.h"
+
 MainWindow::MainWindow(QWidget *parent)
     :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    ///TODO(ksh): move token to json config file
-    tgManager("1628964068:AAGPtBbk9D5Bq7nnucPYENYkGlrIuEHy-cU")
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    parseConfigFile();
 
     ui->logs->setOpenExternalLinks(true);
 
     initSignalSlots();
-    tgManager.start();
+
+    tgManager = std::unique_ptr<TelegramBotManager>(new TelegramBotManager(configJson->get("tg_token").toString()));
+    tgManager->start();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::parseConfigFile(const QString &configFilePath)
+{
+    try
+    {
+        Poco::FileInputStream fis(configFilePath.toStdString());
+        Poco::JSON::Parser parser;
+        auto results = parser.parse(fis);
+        configJson = results.extract<Poco::JSON::Object::Ptr>();
+    }
+    catch(Poco::JSON::JSONException &jsone)
+    {
+        std::cout << jsone.message();
+    }
 }
 
 void MainWindow::initSignalSlots()
