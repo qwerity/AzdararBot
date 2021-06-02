@@ -3,7 +3,8 @@
 /cmake-build-*
 
 #binaries
-/install
+/install/AzdararBot
+/install/config.json
 
 #qt
 CMakeLists.txt.user
