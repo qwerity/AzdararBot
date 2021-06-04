@@ -1,5 +1,7 @@
 #include "telegram_bot_manager.h"
 
+#include <Poco/StringTokenizer.h>
+
 TelegramBotManager::TelegramBotManager(const std::string &token)
     : bot(TgBot::Bot(token))
 {
@@ -7,8 +9,25 @@ TelegramBotManager::TelegramBotManager(const std::string &token)
 
     bot.getEvents().onCommand("keywords", [this](const TgBot::Message::Ptr &message)
     {
-        const auto keywords = botCommandKeywords.join(" ");
-        bot.getApi().sendMessage(message->chat->id, keywords.isEmpty() ? "keywords not set" : keywords.toStdString());
+        auto args = Poco::StringTokenizer(message->text, " ");
+        if (args.count() < 3) {
+            const auto keywords = botCommandKeywords.join(" ");
+            const static std::string usage = "you can add or delete keyword from your request using follow command:\n\t/keywords add keyword1 keyword2\n\t/keywords del keyword1 keyword2";
+            bot.getApi().sendMessage(message->chat->id, usage);
+            bot.getApi().sendMessage(message->chat->id, keywords.isEmpty() ? "keywords not set" : keywords.toStdString());
+        }
+        else {
+            if ("add" == args[1]) {
+                for (auto i = 2; i < args.count(); ++i) {
+                    botCommandKeywords.append(QString::fromStdString(args[i]));
+                }
+            }
+            else if ("del" == args[1]) {
+                for (auto i = 2; i < args.count(); ++i) {
+                    botCommandKeywords.removeAll(QString::fromStdString(args[i]));
+                }
+            }
+        }
     });
     bot.getEvents().onCommand("subscribe", [this](const TgBot::Message::Ptr &message)
     {
@@ -17,7 +36,7 @@ TelegramBotManager::TelegramBotManager(const std::string &token)
         for (auto &item : items) {
             if (item.isEmpty()) { continue; }
 
-            if (! item.containsAtLeastOneKeywords(botCommandKeywords)) { continue; }
+            if (!botCommandKeywords.isEmpty() && ! item.containsAtLeastOneKeywords(botCommandKeywords)) { continue; }
 
             try {
                 bot.getApi().sendMessage(message->chat->id, item.tgBlock());
@@ -33,8 +52,8 @@ TelegramBotManager::TelegramBotManager(const std::string &token)
             return;
         }
         try {
-            botCommandKeywords.append(QString::fromStdString(message->text).toLower());
-            bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
+//            botCommandKeywords.append(QString::fromStdString(message->text).toLower());
+//            bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
         }
         catch(std::exception &e) {
             qInfo() << e.what();

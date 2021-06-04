@@ -12,13 +12,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    parseConfigFile();
-
     ui->logs->setOpenExternalLinks(true);
 
+    parseConfigFile();
     initSignalSlots();
 
-    tgManager = std::unique_ptr<TelegramBotManager>(new TelegramBotManager(configJson->get("tg_token").toString()));
+    tgManager = std::make_unique<TelegramBotManager>(configJson->get("tg_token").toString());
     tgManager->start();
 }
 
