@@ -15,10 +15,9 @@ public:
     explicit TelegramBotManager(const std::string &token);
     ~TelegramBotManager() override;
 
-signals:
-
 private:
     void initMyCommands();
+    void checkSubscriptions();
     void run() override;
 
 private:
