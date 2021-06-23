@@ -6,6 +6,7 @@
 /install/AzdararBot
 /install/TgBot_test
 /install/config.json
+/install/app.db
 
 #qt
 CMakeLists.txt.user

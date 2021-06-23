@@ -22,10 +22,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 set(QT_VERSION 5)
-set(REQUIRED_QT_LIBS Core Widgets Xml Network)
+set(REQUIRED_QT_LIBS Core Sql Xml Network)
 
 find_package(Qt${QT_VERSION} COMPONENTS ${REQUIRED_QT_LIBS} REQUIRED)
-set(REQUIRED_LIBS_QUALIFIED Qt5::Gui Qt5::Widgets Qt5::Xml Qt5::Network)
+set(REQUIRED_LIBS_QUALIFIED Qt5::Xml Qt5::Sql Qt5::Network)
 
 # POCO
 find_package(OpenSSL REQUIRED)
@@ -37,8 +37,6 @@ LIST(APPEND REQUIRED_LIBS_QUALIFIED TgBot)
 
 # application executable ###############################################################################################
 file(GLOB SOURCES "*.cpp" "*.h")
-FILE(GLOB FORMS "*.ui")
-qt5_wrap_ui(FORMS_HEADERS ${FORMS})
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${FORMS})
 

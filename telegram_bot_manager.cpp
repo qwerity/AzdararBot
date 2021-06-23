@@ -7,36 +7,42 @@ TelegramBotManager::TelegramBotManager(const std::string &token)
 {
     initMyCommands();
 
+    dbManager.moveToThread(this);
+
     bot.getEvents().onCommand("keywords", [this](const TgBot::Message::Ptr &message)
     {
+        auto userSubscriptionKeywords = dbManager.userSubscriptionKeywords(message->chat->id);
         auto args = Poco::StringTokenizer(message->text, " ");
         if (args.count() < 3) {
-            const auto keywords = botCommandKeywords.join(" ");
             const static std::string usage = "you can add or delete keyword from your request using follow command:\n\t/keywords add keyword1 keyword2\n\t/keywords del keyword1 keyword2";
             bot.getApi().sendMessage(message->chat->id, usage);
-            bot.getApi().sendMessage(message->chat->id, keywords.isEmpty() ? "keywords not set" : keywords.toStdString());
         }
         else {
-            if ("add" == args[1]) {
-                for (auto i = 2; i < args.count(); ++i) {
-                    botCommandKeywords.append(QString::fromStdString(args[i]));
+            for (auto i = 2; i < args.count(); ++i) {
+                auto const keyword = QString::fromStdString(args[i]);
+                if ("add" == args[1]) {
+                    if (! userSubscriptionKeywords.contains(keyword)) {
+                        userSubscriptionKeywords.append(keyword);
+                    }
+                }
+                else if ("del" == args[1]) {
+                    userSubscriptionKeywords.removeAll(keyword);
                 }
             }
-            else if ("del" == args[1]) {
-                for (auto i = 2; i < args.count(); ++i) {
-                    botCommandKeywords.removeAll(QString::fromStdString(args[i]));
-                }
-            }
+
+            dbManager.updateUserSubscription(message->chat->id, userSubscriptionKeywords);
         }
+        bot.getApi().sendMessage(message->chat->id, userSubscriptionKeywords.isEmpty() ? "keywords not set" : userSubscriptionKeywords.join(" ").toStdString());
     });
     bot.getEvents().onCommand("subscribe", [this](const TgBot::Message::Ptr &message)
     {
+        const auto userSubscriptionKeywords = dbManager.userSubscriptionKeywords(message->chat->id);
         auto items = azdararParser.rssParsedSync();
 
         for (auto &item : items) {
             if (item.isEmpty()) { continue; }
 
-            if (!botCommandKeywords.isEmpty() && ! item.containsAtLeastOneKeywords(botCommandKeywords)) { continue; }
+            if (!userSubscriptionKeywords.isEmpty() && ! item.containsAtLeastOneKeywords(userSubscriptionKeywords)) { continue; }
 
             try {
                 bot.getApi().sendMessage(message->chat->id, item.tgBlock());
@@ -61,9 +67,18 @@ TelegramBotManager::TelegramBotManager(const std::string &token)
     });
 }
 
+TelegramBotManager::~TelegramBotManager()
+{
+    stopped = true;
+    if (!wait(11000)) {
+        terminate();
+    }
+}
+
 void TelegramBotManager::run()
 {
     try {
+        dbManager.open("app.db");
         printf("Bot username: %s\n", bot.getApi().getMe()->username.c_str());
         bot.getApi().deleteWebhook();
 
@@ -75,13 +90,6 @@ void TelegramBotManager::run()
     }
     catch (std::exception &e) {
         printf("error: %s\n", e.what());
-    }
-}
-TelegramBotManager::~TelegramBotManager()
-{
-    stopped = true;
-    if (!wait(11000)) {
-        terminate();
     }
 }
 

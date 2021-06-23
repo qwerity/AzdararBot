@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AzdararParser.h"
+#include "db_manager.h"
 
 #include <tgbot/tgbot.h>
 
@@ -24,8 +25,8 @@ private:
     TgBot::Bot bot;
     std::vector<TgBot::BotCommand::Ptr> commands;
 
+    DBManager dbManager;
     AzdararParser azdararParser;
 
     bool stopped = false;
-    QStringList botCommandKeywords;
 };
